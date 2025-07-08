@@ -1,0 +1,45 @@
+<!-- profile.html -->
+{% extends "layout.html" %}
+{% block title %}个人中心{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <h2>个人中心</h2>
+        <div class="user-info">
+            <div class="avatar">
+                <span>{{ user.username[0].upper() }}</span>
+            </div>
+            <div class="user-details">
+                <h3>{{ user.username }}</h3>
+                <p>注册用户</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="profile-actions">
+        <a href="{{ url_for('chat') }}" class="btn btn-primary">
+            开始新的对话
+        </a>
+    </div>
+    
+    <div class="recent-chats">
+        <h3>最近对话</h3>
+        {% if user.chat_history %}
+            <ul class="chat-list">
+                {% for chat in user.chat_history[-3:]|reverse %}
+                <li>
+                    <a href="{{ url_for('chat') }}?chat_id={{ chat.id }}">
+                        <h4>{{ chat.title }}</h4>
+                        <p>{{ chat.messages[-1].content[:50] }}...</p>
+                        <time>{{ chat.created_at }}</time>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="empty-state">您还没有任何对话记录</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

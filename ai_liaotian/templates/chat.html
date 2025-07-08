@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+{% block title %}AI聊天{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="chat-sidebar">
+        <div class="sidebar-header">
+            <a href="{{ url_for('chat') }}" class="btn btn-primary">+ 新的对话</a>
+        </div>
+
+        <div class="chat-history">
+            <h3>历史对话</h3>
+            <ul id="chat-history-list">
+                {% for chat in user.chat_history|reverse %}
+                <li>
+                    <a href="{{ url_for('chat', chat_id=chat.id) }}" class="chat-history-item {% if selected_chat and selected_chat.id == chat.id %}active{% endif %}">
+                        {{ chat.title }}
+                    </a>
+                    <form method="POST" action="{{ url_for('delete_chat', chat_id=chat.id) }}" style="display: inline;">
+                        <button type="submit" class="btn btn-danger">删除</button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="chat-main">
+        <div class="chat-panel" id="chat-panel">
+            {% if selected_chat %}
+                <div class="chat-messages" id="chat-messages">
+                    {% for message in selected_chat.messages %}
+                    <div class="message message-{{ message.role }}">
+                        <div class="message-avatar">
+                            {{ '你' if message.role == 'user' else 'AI' }}
+                        </div>
+                        <div class="message-content">
+                            <div class="message-header">
+                                <span class="message-role">
+                                    {{ '你' if message.role == 'user' else 'AI助手' }}
+                                </span>
+                                <span class="message-time">
+                                    {{ message.timestamp|format_time }}
+                                </span>
+                            </div>
+                            <div class="message-text">
+                                {{ message.content|markdown|safe }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="chat-welcome">
+                    <h2>AI聊天助手</h2>
+                    <p>我可以帮助你解答各种问题。开始输入你的问题吧！</p>
+
+                    <div class="prompt-suggestions">
+                        <h3>试试问我：</h3>
+                        <ul>
+                            {% for suggestion in suggestions %}
+                            <li>
+                                <form method="POST" action="{{ url_for('chat') }}">
+                                    <input type="hidden" name="prompt" value="{{ suggestion }}">
+                                    <button type="submit" class="suggestion-btn">{{ suggestion }}</button>
+                                </form>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="chat-input-container">
+                <form method="POST" id="chat-form">
+                    <textarea id="chat-input" name="prompt" placeholder="输入你的问题..." rows="1"></textarea>
+                    <button type="submit" id="send-btn">
+                        <svg viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+                        </svg>
+                    </button>
+                </form>
+                <p class="input-hint">AI可能会犯错，请核实重要信息</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

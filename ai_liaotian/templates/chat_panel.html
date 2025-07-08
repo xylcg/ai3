@@ -1,0 +1,35 @@
+<div class="chat-panel" id="chat-panel">
+    {% if request.args.get('chat_id') %}
+        <!-- 加载特定对话时会显示聊天内容 -->
+        <div class="chat-messages" id="chat-messages">
+            <!-- 消息将通过JavaScript动态加载 -->
+        </div>
+    {% else %}
+        <!-- 新对话的初始状态 -->
+        <div class="chat-welcome">
+            <h2>AI聊天助手</h2>
+            <p>我可以帮助你解答各种问题。开始输入你的问题吧！</p>
+            
+            <div class="prompt-suggestions">
+                <h3>试试问我：</h3>
+                <ul>
+                    <li><button class="suggestion-btn">如何提高工作效率？</button></li>
+                    <li><button class="suggestion-btn">解释一下量子计算的基本概念</button></li>
+                    <li><button class="suggestion-btn">写一封辞职信的模板</button></li>
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+    
+    <div class="chat-input-container">
+        <form id="chat-form">
+            <textarea id="chat-input" placeholder="输入你的问题..." rows="1"></textarea>
+            <button type="submit" id="send-btn">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+                </svg>
+            </button>
+        </form>
+        <p class="input-hint">AI可能会犯错，请核实重要信息</p>
+    </div>
+</div>
